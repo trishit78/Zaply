@@ -38,7 +38,7 @@ export default function Sidebar({ onExecute, isExecuting }: SidebarProps) {
     <div className="w-80 bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 p-4 overflow-y-auto">
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-             n8n
+          Minimal n8n
         </h2>
 
         <div className="flex gap-2">
