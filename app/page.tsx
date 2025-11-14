@@ -1,14 +1,19 @@
 'use client'
 
+import CustomNode from "@/component/CustomNode";
 import Sidebar from "@/component/ui/Sidebar";
 import { nodeDefinitions } from "@/lib/node-definitions";
 import { useWorkflowStore } from "@/lib/store";
 import { NodeData, WorkFlowNode } from "@/lib/types";
 import { useCallback, useRef, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap, OnNodesChange, useEdgesState, useNodesState } from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, NodeTypes, OnNodesChange, useEdgesState, useNodesState } from "reactflow";
 
 
 let nodeIdCounter = 0;
+
+const nodeTypes:NodeTypes={
+  custom:CustomNode
+}
 
 export default function Home() {
   const {nodes,edges,addEdge,addNode,updateNode,setNodes,setEdges} = useWorkflowStore();
@@ -22,6 +27,9 @@ export default function Home() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance,setReactFlowInstance] = useState<any>(null);
   
+
+  
+
   const handleNodesChange: OnNodesChange = useCallback(
     (changes) => {
       onNodesChange(changes);
@@ -95,6 +103,7 @@ export default function Home() {
         onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        nodeTypes={nodeTypes}
         fitView
         className="bg-gray-50 dark:bg-gray-900"
 
