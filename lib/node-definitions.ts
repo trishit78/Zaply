@@ -1,0 +1,53 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Webhook } from "lucide-react";
+
+export interface NodeDefinition{
+    type:string;
+    label:string;
+    description:string,
+    category:'trigger'|'ai'|'action'|'logic';
+    icon:any,
+    color:string,
+    defaultConfig:Record<string,any>;
+    configFields:ConfigField[];
+}
+
+export interface ConfigField{
+    name:string,
+    label:string,
+    type:'text'|'textarea'| 'select' | 'number',
+    options?:{value:string;label:string}[];
+    required:boolean,
+    defaultValue?:any;
+}
+
+
+export const nodeDefinitions:Record<string,NodeDefinition> = {
+    webhook:{
+        type:'webhook',
+        label:'Webhook Trigger',
+        description:'Trigger workflow when recieving HTTP request',
+        category:'trigger',
+        icon:Webhook,
+        color:'bg-blue-500',
+        defaultConfig:{
+            method:"POST",
+            path:'/webhook'
+        },
+        configFields:[
+            {
+                name:'method',
+                label:"HTTP Method",
+                type:'select',
+                options:[
+                    {value:"GET",label:"GET"},
+                    {value:"POST",label:"POST"},
+                    {value:"PATCH",label:"PATCH"},
+                ],
+                required:true,
+                defaultValue:"POST"
+            }
+        ]
+    },
+
+}
