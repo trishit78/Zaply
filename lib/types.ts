@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Node } from "reactflow";
 
 export type NodeType =
@@ -10,9 +11,7 @@ export type NodeType =
 export interface NodeData {
     label:string,
     type:NodeType,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     config:Record<string,any>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     output?:any;
     isExecuting?:boolean;
     error?:string;

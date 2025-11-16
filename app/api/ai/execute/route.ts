@@ -85,8 +85,8 @@ export async function POST(request: NextRequest) {
 }
 
 async function executeTextGenerator(config: any, input: any, openai: OpenAI) {
-  let { prompt, temperature, maxTokens } = config;
-
+  let { prompt } = config;
+  const { temperature, maxTokens} =config;
   prompt = replaceTemplateVariables(prompt, input);
 
   const completion = await openai.chat.completions.create({
@@ -109,7 +109,8 @@ async function executeTextGenerator(config: any, input: any, openai: OpenAI) {
 }
 
 async function executeAnalyzer(config: any, input: any, openai: OpenAI) {
-  let { text, analysisType } = config;
+  let { text  } = config;
+  const{analysisType} = config;
   text = replaceTemplateVariables(text, input);
 
   let systemPrompt = "";
@@ -144,12 +145,13 @@ async function executeAnalyzer(config: any, input: any, openai: OpenAI) {
 }
 
 async function executeChatbot(config: any, input: any, openai: OpenAI) {
-  let { systemPrompt, userMessage, personality } = config;
+  let { systemPrompt, userMessage } = config;
+  const {personality} =config;
 
   systemPrompt = replaceTemplateVariables(systemPrompt, input);
   userMessage = replaceTemplateVariables(userMessage, input);
 
-  const personalities = {
+  const personalities:any = {
     professional: "Respond professionally.",
     friendly: "Respond in a warm and friendly manner.",
     concise: "Respond briefly and to the point.",

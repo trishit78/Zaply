@@ -2,7 +2,7 @@
 
 import React from "react";
 import { nodeDefinitions, NodeDefinition } from "@/lib/node-definitions";
-import { Play, Plus, Trash2 } from "lucide-react";
+import { Play, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkflowStore } from "@/lib/store";
 
