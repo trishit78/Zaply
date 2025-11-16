@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { replaceTemplateVariables } from "@/app/api/ai/execute/route";
 import { nodeDefinitions } from "./node-definitions";
 import { NodeExecutionContext, NodeExecutionResult } from "./types";
 

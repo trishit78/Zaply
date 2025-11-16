@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-function replaceTemplateVariables(text: string, input: any): string {
+ export function replaceTemplateVariables(text: string, input: any): string {
   if (!text || typeof text !== "string") return text;
 
   let result = text.replace(
@@ -52,6 +53,18 @@ export async function POST(request: NextRequest) {
         result = await executeTextGenerator(config, input, openai);
         break;
 
+      case "aiAnalyzer":
+        result = await executeAnalyzer(config, input, openai);
+        break;
+
+      case "aiChatbot":
+        result = await executeChatbot(config, input, openai);
+        break;
+
+      case "aiDataExtractor":
+        result = await executeDataExtractor(config, input, openai);
+        break;
+
       default:
         return NextResponse.json(
           { error: `Unknown AI node type: ${type}` },
@@ -93,4 +106,104 @@ async function executeTextGenerator(config: any, input: any, openai: OpenAI) {
     model: completion.model,
     usage: completion.usage,
   };
+}
+
+async function executeAnalyzer(config: any, input: any, openai: OpenAI) {
+  let { text, analysisType } = config;
+  text = replaceTemplateVariables(text, input);
+
+  let systemPrompt = "";
+  switch (analysisType) {
+    case "sentiment":
+      systemPrompt =
+        "Analyze the sentiment of the following text. Respond with: Positive, Negative, or Neutral, with confidence score and explanation.";
+      break;
+    case "keywords":
+      systemPrompt =
+        "Extract the most important keywords from the text. Return JSON array.";
+      break;
+    case "summary":
+      systemPrompt = "Summarize the following text in 2–3 sentences.";
+      break;
+  }
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: text },
+    ],
+    temperature: 0.3,
+  });
+
+  return {
+    analysisType,
+    result: completion.choices[0].message.content,
+    usage: completion.usage,
+  };
+}
+
+async function executeChatbot(config: any, input: any, openai: OpenAI) {
+  let { systemPrompt, userMessage, personality } = config;
+
+  systemPrompt = replaceTemplateVariables(systemPrompt, input);
+  userMessage = replaceTemplateVariables(userMessage, input);
+
+  const personalities = {
+    professional: "Respond professionally.",
+    friendly: "Respond in a warm and friendly manner.",
+    concise: "Respond briefly and to the point.",
+  };
+
+  const fullSystemPrompt = `${systemPrompt}\n\n${
+    personalities[personality] || ""
+  }`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: fullSystemPrompt },
+      { role: "user", content: userMessage },
+    ],
+    temperature: 0.7,
+  });
+
+  return {
+    response: completion.choices[0].message.content,
+    personality,
+    usage: completion.usage,
+  };
+}
+
+async function executeDataExtractor(config: any, input: any, openai: OpenAI) {
+  let { text, schema } = config;
+
+  text = replaceTemplateVariables(text, input);
+  schema = replaceTemplateVariables(schema, input);
+
+  const systemPrompt = `Extract data according to this schema: ${schema}. Return ONLY JSON.`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: text },
+    ],
+    temperature: 0.1,
+  });
+
+  const extracted = completion.choices[0].message.content;
+
+  try {
+    return {
+      extractedData: JSON.parse(extracted || "{}"),
+      usage: completion.usage,
+    };
+  } catch {
+    return {
+      extractedData: extracted,
+      note: "Returned raw text because JSON parsing failed",
+      usage: completion.usage,
+    };
+  }
 }
