@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+ 
 import {create} from 'zustand';
 import { WorkFlowEdge, WorkFlowNode, WorkFlowState } from './types';
 import { addEdge as addReactFlowEdge,Connection } from 'reactflow';
@@ -42,7 +42,7 @@ export const useWorkflowStore = create<WorkFlowState>((set,get)=>({
         }))
     },
 
-    setNodes:(nodes:WorkFlowEdge[])=>{
+    setNodes:(nodes:WorkFlowNode[])=>{
         set({nodes});
     },
     setEdges:(edges:WorkFlowEdge[])=>{

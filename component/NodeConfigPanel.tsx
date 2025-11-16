@@ -4,12 +4,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { nodeDefinitions } from "@/lib/node-definitions";
 import { useWorkflowStore } from "@/lib/store";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface NodeConfigPanelProps{
     nodeId:string,
@@ -21,12 +21,7 @@ export default function NodeConfigPanel({
 }:NodeConfigPanelProps){
     const {nodes,updateNode}= useWorkflowStore();
     const node = nodes.find((n)=> n.id ===nodeId);
-    const [config,setConfig] = useState<Record<string,any>>(node?.data.config || {});
-    useEffect(()=>{
-        if(node?.data.config){
-            setConfig(node.data.config);
-        }
-    },[node])
+    const [config,setConfig] = useState<Record<string,any>>(() => node?.data.config || {});
 
     if(!node)return;
 
@@ -104,14 +99,18 @@ export default function NodeConfigPanel({
                 {field.type === "select" && (
                   <Select
                     value={config[field.name] || field.defaultValue || ""}
-                    onChange={(e) => handleChange(field.name, e.target.value)}
-                    className="mt-1"
+                    onValueChange={(value) => handleChange(field.name, value)}
                   >
-                    {field.options?.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder={field.placeholder} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {field.options?.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                 )}
               </div>

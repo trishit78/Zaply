@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Node } from "reactflow";
+import { Node, Edge } from "reactflow";
 
 export type NodeType =
   | "webhook"
@@ -21,7 +21,7 @@ export interface WorkFlowNode extends  Node{
     data:NodeData;
 }
 
-export interface WorkFlowEdge extends Node{}
+export type WorkFlowEdge = Edge;
 
 
 export interface WorkFlowState {

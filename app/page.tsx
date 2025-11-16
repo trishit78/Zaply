@@ -87,7 +87,7 @@ export default function Home() {
         }
       });
     },
-    [edges, onEdgesChange, setEdges]
+    [onEdgesChange, setEdges]
   );
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -268,6 +268,7 @@ export default function Home() {
 
       {selectedNodeId && (
         <NodeConfigPanel
+          key={selectedNodeId}
           nodeId={selectedNodeId}
           onClose={() => setSelectedNodeId(null)}
         />
